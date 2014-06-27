@@ -3,6 +3,8 @@
 	
 	<meta title="Hyptronome" package="com.example.hyptronome" version="1.0.0" company="Company Name" />
 	<app main="Main" path="Export" file="Hyptronome" />
+	<window fps="40" />
+	
 	
 	<source path="Source" />
 	
