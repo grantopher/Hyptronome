@@ -1,65 +1,59 @@
 package;
 
 import flash.display.Sprite;
+import openfl.geom.Point;
 import flash.events.Event;
 import flash.Lib;
+import motion.Actuate;
 
 class Metronome extends Sprite {
 
 	private var ball_size:Int;
 	private var dir:Int = 1;
-	private var max_vel:Int = 9;
+	private var max_vel:Int = 2;
 	private var vel:Int;
 	private var padding:Int;
+	private var coords:Array<Int>;
+	private var ball_speed:Int;
 	
 	public function new() {
 		super();
 		calculate_size();
+		draw_ball();
 		vel = max_vel;
-		addEventListener(Event.ENTER_FRAME, draw_ball);
+		ball_speed = 3;
+		animate_left();
+
 	}
 	private function calculate_size() {
-		x = Std.int(Lib.current.stage.stageWidth/2);
-		y = Std.int(Lib.current.stage.stageHeight/2);
-		dir = 1; vel = max_vel;
-		ball_size = Std.int((Lib.current.stage.stageHeight * .743453452)/2);
+		this.x = Std.int(Lib.current.stage.stageWidth/2);
+		this.y = Std.int(Lib.current.stage.stageHeight*.44);
+		ball_size = Std.int((Lib.current.stage.stageHeight * .45)/2);
 		padding = Std.int(Lib.current.stage.stageWidth * .0121212);
+
+		coords = [padding + ball_size, Lib.current.stage.stageWidth - padding - ball_size];
+		draw_ball();
 	}
 
-	private function draw_ball(e : Event) {
-		move_me();
+	private function draw_ball() {
 		graphics.clear();
-		graphics.beginFill(0x2222BB);
+		graphics.lineStyle(.5, 0x2222BB);
+		graphics.beginFill(0x2222BB, 1);
 		graphics.drawCircle(0,0,ball_size);
 	}
 
-	private function move_me() {
-		var check = check_myself();
-		if(!check) {
-			if(vel < max_vel){
-				trace('doing naughty things');
-				vel *= 2;
-				if(vel > max_vel) vel = max_vel;
-			}
-		}
-		else {
-			if(vel > 0) vel = Math.floor(vel*.2);
-			else {
-				vel = 1;
-				dir *= -1;
-			}
-		}
-		x += dir*vel;
-	}
-
-	private function check_myself() : Bool {
-		if(dir == 1 && x + ball_size + padding + (dir*vel) >= Lib.current.stage.stageWidth) return true;
-		else if(dir == -1 && x - ball_size - padding + (dir*vel) <= 0) return true;
-		else return false;
-	}
-
-
 	public function resize_me(): Void {
 		calculate_size();
+	}
+
+	private function animate_right() {
+		var point_rght = coords[1];
+		Actuate.tween(this, ball_speed, {x: point_rght}).ease(motion.easing.Quad.easeInOut).onComplete(animate_left);
+	}
+
+	private function animate_left() {
+		var point_left = coords[0];
+		trace(ball_speed+"_"+point_left);
+		Actuate.tween(this, ball_speed, {x: point_left}).ease(motion.easing.Quad.easeInOut).onComplete(animate_right);
 	}
 }

@@ -5,7 +5,7 @@
 	<app main="Main" path="Export" file="Hyptronome" />
 	<window fps="40" />
 	
-	
+	<haxelib name="actuate" />
 	<source path="Source" />
 	
 	<haxelib name="openfl" />
